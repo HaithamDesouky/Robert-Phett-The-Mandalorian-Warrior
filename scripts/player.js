@@ -1,5 +1,5 @@
 class Player {
-  constructor(game, x, y, d) {
+  constructor(game, x, y) {
     this.game = game;
 
     this.fly = '/images/player/jet.png';
@@ -8,6 +8,8 @@ class Player {
     this.shooting = false;
     this.running = false;
     this.x = x;
+    this.width = 110;
+    this.height = 110;
     this.y = y;
     this.x_velocity = 0;
     this.y_velocity = 0;
@@ -108,6 +110,6 @@ class Player {
       this.playerImg.src = `/images/player/run-1-${this.direction}.png`;
     }
 
-    context.drawImage(this.playerImg, this.x, this.y, 90, 90);
+    context.drawImage(this.playerImg, this.x, this.y, this.width, this.height);
   }
 }

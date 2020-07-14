@@ -15,9 +15,24 @@ window.onload = () => {
       this.context = canvas.getContext('2d');
       this.background = new Background(this);
       this.player = new Player(this, 200, 580, -1);
+      this.running = true;
       this.bullet = new Bullet(this);
       this.bullets = [];
       this.shoot();
+      this.enemies = [];
+      this.createEnemy();
+    }
+
+    createEnemy() {
+      if (this.enemies.length < 2) {
+        let randomHeight = Math.random() * 450;
+        const enemy = new Enemies(1500, randomHeight, this);
+        this.enemies.push(enemy);
+      }
+
+      setTimeout(() => {
+        this.createEnemy();
+      }, 1000);
     }
 
     shoot() {
@@ -26,6 +41,7 @@ window.onload = () => {
         switch (key) {
           case 'Space':
             this.player.shooting = true;
+            this.bullet.gunFired = true;
             const bullet = new Bullet(this);
             this.bullets.push(bullet);
         }
@@ -36,6 +52,38 @@ window.onload = () => {
       if (this.bullets.length > 0) {
         for (let bullet of this.bullets) {
           bullet.runLogic();
+          this.gunFired = true;
+          console.log(bullet.x);
+          if (bullet.x < -50 || bullet.x > 1400) {
+            this.bullets.splice(bullet, 1);
+          }
+
+          for (let i = 0; i < this.enemies.length; i++) {
+            // const bulletHit = this.enemies[i].gotShot(bullet);
+
+            if (
+              bullet.x + bullet.width > this.enemies[i].x &&
+              bullet.x < this.enemies[i].x + this.enemies[i].width &&
+              bullet.y + bullet.height > this.enemies[i].y &&
+              bullet.y < this.enemies[i].y + this.enemies[i].height
+            ) {
+              this.enemies[i].state = 'dead';
+              console.log('hit');
+            }
+          }
+        }
+      }
+
+      for (let enemy of this.enemies) {
+        enemy.runLogic();
+        if (enemy.x < -200 || enemy.y > 900) {
+          this.enemies.splice(enemy, 1);
+        }
+
+        const intersectingWithPlayer = enemy.checkIntersection(this.player);
+
+        if (intersectingWithPlayer) {
+          enemy.state = 'dead';
         }
       }
     }
@@ -45,10 +93,15 @@ window.onload = () => {
     paint() {
       this.background.paint();
       this.player.paint();
+
       if (this.bullets.length > 0) {
         for (let bullet of this.bullets) {
           bullet.paint();
         }
+      }
+
+      for (let enemy of this.enemies) {
+        enemy.paint();
       }
     }
 
@@ -59,29 +112,64 @@ window.onload = () => {
 
       setTimeout(() => {
         this.loop();
-      }, 1000 / 20);
+      }, 1000 / 40);
     }
   }
 
-  class Bullet {
-    constructor(game) {
+  class Enemies {
+    constructor(x, y, game) {
+      this.explosionImg = new Image();
+      this.explosionImg.src = '/images/enemy/explosion.png';
+      this.enemyImg = new Image();
+      this.enemyImg.src = '/images/enemy/viper.gif';
+      this.y = y;
+      this.x = x;
+      this.width = 200;
+      this.state = 'alive';
+      this.height = 200;
       this.game = game;
-      this.y = this.game.player.y;
-      this.x = this.game.player.x;
-      this.bulletImg = new Image();
-      this.bulletImg.src = '/images/bullet.png';
-      this.direction = this.game.player.direction;
+      this.player = this.game.player;
+      this.reasonable = 100;
+      this.speed = 10;
     }
+
+    checkIntersection(player) {
+      return (
+        player.x + player.width - this.reasonable > this.x &&
+        player.x < this.x + this.width - this.reasonable &&
+        player.y + player.height - this.reasonable > this.y &&
+        player.y < this.y + this.height - this.reasonable
+      );
+    }
+
+    // gotShot(bullet) {
+    //   return (
+    //     bullet.x + bullet.width > this.x &&
+    //     bullet.x < this.x + this.width &&
+    //     bullet.y + bullet.height > this.y &&
+    //     bullet.y < this.y + this.height
+    //   );
+    // }
     runLogic() {
-      if (this.direction === 'right') {
-        this.x += 50;
-      } else if (this.direction === 'left') {
-        this.x -= 50;
+      this.x -= this.speed;
+      if (this.state === 'dead') {
+        this.y += 10;
       }
     }
     paint() {
+      let source = this.enemyImg;
+
+      if (this.state === 'alive') {
+        source = this.enemyImg;
+      } else if (this.state === 'dead') {
+        source = this.explosionImg;
+        this.width = 75;
+        this.height = 75;
+        this.speed = 5;
+        this.y += 4;
+      }
       const context = this.game.context;
-      context.drawImage(this.bulletImg, this.x, this.y, 60, 50);
+      context.drawImage(source, this.x, this.y, this.width, this.height);
     }
   }
 };
