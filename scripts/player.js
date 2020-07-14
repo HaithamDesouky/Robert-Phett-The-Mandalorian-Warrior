@@ -18,7 +18,6 @@ class Player {
     this.playerImg.src = `/images/player/idle-${this.direction}.png`;
     this.control();
     this.canvas = canvas;
-   
   }
 
   control() {
@@ -35,7 +34,7 @@ class Player {
             this.y -= 3;
           }
 
-          if (this.y > 560) {
+          if (this.y > 545) {
             this.running = true;
           }
           this.direction = 'left';
@@ -50,7 +49,7 @@ class Player {
           if (this.y < 560) {
             this.y -= 3;
           }
-          if (this.y > 560) {
+          if (this.y > 545) {
             this.running = true;
           }
           this.direction = 'right';
@@ -58,6 +57,7 @@ class Player {
           this.shooting = false;
 
           this.moveRight();
+          console.log(this.y);
           break;
         case 'ArrowUp':
           event.preventDefault();

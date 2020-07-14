@@ -23,6 +23,11 @@ html {
   text-align: center;
 }
 
+#loser {
+  display: none;
+  padding-top: 1rem;
+}
+
 .canvas-wrapper {
   display: flex;
   justify-content: center;
@@ -71,4 +76,29 @@ ul {
 
 ul:hover {
   transform: scale(1.2);
+}
+
+#start-button2 {
+  text-decoration: none;
+  font-size: 3rem;
+  background-color: white;
+  padding: 1rem;
+  border: 3px solid black;
+  border-radius: 9px;
+  box-shadow: 17px 29px 82px 0px rgba(0, 0, 0, 0.94);
+}
+
+#loser h1 {
+  font-size: 7rem;
+}
+
+#loser h3 {
+  font-size: 4rem;
+}
+#loser span {
+  font-size: 6rem;
+}
+
+#loser p {
+  font-size: 3rem;
 }

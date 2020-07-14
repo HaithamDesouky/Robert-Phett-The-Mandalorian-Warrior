@@ -3,8 +3,8 @@ window.onload = () => {
     const wrapper = document.querySelector('.wrapper');
     wrapper.style.display = 'none';
     const canvasElement = document.getElementById('canvas');
-
     const game = new Game(canvasElement);
+    game.running = true;
 
     game.loop();
   };
@@ -24,19 +24,39 @@ window.onload = () => {
       this.score = 0;
       this.scoreBoard = new ScoreBoard(this);
       this.healthbar = new Healthbar(this);
-      this.health = 3;
     }
 
+    lose() {
+      this.running = false;
+      const losingDiv = document.getElementById('loser');
+      losingDiv.style.display = 'block';
+      this.canvas.style.display = 'none';
+
+      const result = document.querySelector('div span');
+      result.textContent = this.score;
+
+      document.getElementById('start-button2').onclick = () => {
+        location.reload();
+        console.log('hello')(this.running);
+      };
+    }
     createEnemy() {
-      if (this.enemies.length < 2) {
-        let randomHeight = Math.random() * 450;
+      let limit = 1;
+      limit += this.score;
+
+      console.log(limit);
+      if (this.enemies.length < limit) {
+        let randomHeight = Math.random() * 470;
         const enemy = new Enemies(1500, randomHeight, this);
         this.enemies.push(enemy);
+        console.log(this.enemies.length);
       }
 
-      setTimeout(() => {
-        this.createEnemy();
-      }, 1000);
+      if (this.running) {
+        setTimeout(() => {
+          this.createEnemy();
+        }, 1000);
+      }
     }
 
     shoot() {
@@ -89,7 +109,10 @@ window.onload = () => {
           enemy.state = 'dead';
         }
       }
+
+      this.healthbar.runLogic();
     }
+
     clean() {
       this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
@@ -115,9 +138,11 @@ window.onload = () => {
       this.clean();
       this.paint();
 
-      setTimeout(() => {
-        this.loop();
-      }, 1000 / 40);
+      if (this.running === true) {
+        setTimeout(() => {
+          this.loop();
+        }, 1000 / 40);
+      }
     }
   }
 
@@ -135,7 +160,8 @@ window.onload = () => {
       this.game = game;
       this.player = this.game.player;
       this.reasonable = 100;
-      this.speed = 10;
+      this.reasonableHeight = 20;
+      this.speed = 15;
     }
 
     checkIntersection(player) {
@@ -143,7 +169,7 @@ window.onload = () => {
         player.x + player.width - this.reasonable > this.x &&
         player.x < this.x + this.width - this.reasonable &&
         player.y + player.height - this.reasonable > this.y &&
-        player.y < this.y + this.height - this.reasonable
+        player.y < this.y + this.height - this.reasonableHeight
       );
     }
     runLogic() {
@@ -201,14 +227,20 @@ window.onload = () => {
       this.zeroBar.src = '/images/player/healthbar-0.jpg';
     }
 
+    runLogic() {
+      if (this.health === 0) {
+        this.game.running = false;
+        this.game.lose();
+      }
+    }
+
     paint() {
       const context = this.game.context;
-      console.log(this.health);
+
       let currentHealth = this.health;
 
       switch (currentHealth) {
         case 3:
-          console.log('hello');
           currentHealth = this.fullbar;
           break;
         case 2:
