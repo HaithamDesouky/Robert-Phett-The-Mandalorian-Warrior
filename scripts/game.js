@@ -21,6 +21,10 @@ window.onload = () => {
       this.shoot();
       this.enemies = [];
       this.createEnemy();
+      this.score = 0;
+      this.scoreBoard = new ScoreBoard(this);
+      this.healthbar = new Healthbar(this);
+      this.health = 3;
     }
 
     createEnemy() {
@@ -53,14 +57,11 @@ window.onload = () => {
         for (let bullet of this.bullets) {
           bullet.runLogic();
           this.gunFired = true;
-          console.log(bullet.x);
           if (bullet.x < -50 || bullet.x > 1400) {
             this.bullets.splice(bullet, 1);
           }
 
           for (let i = 0; i < this.enemies.length; i++) {
-            // const bulletHit = this.enemies[i].gotShot(bullet);
-
             if (
               bullet.x + bullet.width > this.enemies[i].x &&
               bullet.x < this.enemies[i].x + this.enemies[i].width &&
@@ -68,7 +69,8 @@ window.onload = () => {
               bullet.y < this.enemies[i].y + this.enemies[i].height
             ) {
               this.enemies[i].state = 'dead';
-              console.log('hit');
+              this.bullets.splice(bullet, 1);
+              this.score += 1;
             }
           }
         }
@@ -83,6 +85,7 @@ window.onload = () => {
         const intersectingWithPlayer = enemy.checkIntersection(this.player);
 
         if (intersectingWithPlayer) {
+          this.healthbar.health--;
           enemy.state = 'dead';
         }
       }
@@ -93,6 +96,8 @@ window.onload = () => {
     paint() {
       this.background.paint();
       this.player.paint();
+      this.scoreBoard.paint();
+      this.healthbar.paint();
 
       if (this.bullets.length > 0) {
         for (let bullet of this.bullets) {
@@ -141,19 +146,10 @@ window.onload = () => {
         player.y < this.y + this.height - this.reasonable
       );
     }
-
-    // gotShot(bullet) {
-    //   return (
-    //     bullet.x + bullet.width > this.x &&
-    //     bullet.x < this.x + this.width &&
-    //     bullet.y + bullet.height > this.y &&
-    //     bullet.y < this.y + this.height
-    //   );
-    // }
     runLogic() {
       this.x -= this.speed;
       if (this.state === 'dead') {
-        this.y += 10;
+        this.y += 8;
       }
     }
     paint() {
@@ -170,6 +166,66 @@ window.onload = () => {
       }
       const context = this.game.context;
       context.drawImage(source, this.x, this.y, this.width, this.height);
+    }
+  }
+
+  class ScoreBoard {
+    constructor(game) {
+      this.game = game;
+    }
+
+    paint() {
+      const context = this.game.context;
+      const score = this.game.score;
+      context.save();
+      context.fillStyle = 'gold';
+      context.font = '50px sans-serif';
+      context.fillText('S C O R E: ' + score, 570, 50);
+      context.restore();
+    }
+  }
+
+  class Healthbar {
+    constructor(game) {
+      this.game = game;
+      this.health = this.game.health;
+      this.fullbar = new Image();
+      this.fullbar.src = '/images/player/healthbar-3.jpg';
+      this.twoBar = new Image();
+      this.twoBar.src = '/images/player/healthbar-2.jpg';
+      this.health = 3;
+      this.currentHealth = this.fullbar;
+      this.oneBar = new Image();
+      this.oneBar.src = '/images/player/healthbar-1.jpg';
+      this.zeroBar = new Image();
+      this.zeroBar.src = '/images/player/healthbar-0.jpg';
+    }
+
+    paint() {
+      const context = this.game.context;
+      console.log(this.health);
+      let currentHealth = this.health;
+
+      switch (currentHealth) {
+        case 3:
+          console.log('hello');
+          currentHealth = this.fullbar;
+          break;
+        case 2:
+          currentHealth = this.twoBar;
+          break;
+        case 1:
+          currentHealth = this.oneBar;
+          break;
+        case 0:
+          currentHealth = this.zeroBar;
+      }
+      context.save();
+      context.fillStyle = 'gold';
+      context.font = '30px sans-serif';
+      context.fillText('H E A L T H', 40, 45);
+      context.restore();
+      context.drawImage(currentHealth, 30, 60, 180, 40);
     }
   }
 };

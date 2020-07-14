@@ -17,7 +17,6 @@ class Bullet {
       this.x -= 30;
     }
 
- 
 
   }
   paint() {

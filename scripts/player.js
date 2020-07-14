@@ -18,6 +18,7 @@ class Player {
     this.playerImg.src = `/images/player/idle-${this.direction}.png`;
     this.control();
     this.canvas = canvas;
+   
   }
 
   control() {
