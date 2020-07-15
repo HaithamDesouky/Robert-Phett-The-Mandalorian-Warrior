@@ -24,6 +24,10 @@ window.onload = () => {
       this.score = 0;
       this.scoreBoard = new ScoreBoard(this);
       this.healthbar = new Healthbar(this);
+      this.powerUps = [];
+      this.powerUp = new Powerup(500, 500, this);
+      this.createPowerUp();
+      this.powerUpGiven = false;
     }
 
     lose() {
@@ -37,8 +41,34 @@ window.onload = () => {
 
       document.getElementById('start-button2').onclick = () => {
         location.reload();
-        console.log('hello')(this.running);
       };
+    }
+
+    createPowerUp() {
+      let randomX = 50 + Math.random() * 900;
+      let randomY = 50 + Math.random() * 600;
+      let randomNum = Math.floor(Math.random() * 11);
+      let purpose = 'health';
+      debugger;
+
+      if (
+        this.score % 10 === 0 &&
+        this.powerUps.length < 1 &&
+        this.score !== 0 &&
+        !this.powerUpGiven
+      ) {
+        if (randomNum % 2 === 0) {
+          purpose = 'health';
+        } else {
+          purpose = 'points';
+        }
+
+        this.powerUpGiven = true;
+
+        const yoda = new Powerup(randomX, randomY, purpose, this);
+
+        this.powerUps.push(yoda);
+      }
     }
     createEnemy() {
       //score with difficulty
@@ -60,15 +90,10 @@ window.onload = () => {
           origin = -200;
           direction = 'right';
         }
-        console.log(randomNumber);
 
         const enemy = new Enemies(origin, randomHeight, direction, this);
 
         this.enemies.push(enemy);
-
-        // console.log(enemy.x);
-
-        // console.log(this.enemies.length);
       }
 
       if (this.running) {
@@ -110,6 +135,7 @@ window.onload = () => {
               this.enemies[i].state = 'dead';
               this.bullets.splice(bullet, 1);
               this.score += 1;
+              this.createPowerUp();
             }
           }
         }
@@ -120,13 +146,28 @@ window.onload = () => {
         if (enemy.x < -500 || enemy.x > 1600 || enemy.y > 1000) {
           this.enemies.splice(enemy, 1);
         }
-        console.log(enemy.x);
         const intersectingWithPlayer = enemy.checkIntersection(this.player);
 
         if (intersectingWithPlayer) {
           this.healthbar.health--;
           enemy.state = 'dead';
         }
+      }
+
+      for (let yoda of this.powerUps) {
+        const yodaPickedUp = yoda.checkIntersection(this.player);
+        if (yodaPickedUp) {
+          if (yoda.purpose === 'points') {
+            this.score += 5;
+          } else if (yoda.purpose === 'health') {
+            if (this.healthbar.health < 3) {
+              this.healthbar.health++;
+            }
+          }
+          this.powerUpGiven = false;
+          this.powerUps.splice(yoda, 1);
+        }
+        console.log(this.powerUpGiven);
       }
 
       this.healthbar.runLogic();
@@ -140,11 +181,14 @@ window.onload = () => {
       this.player.paint();
       this.scoreBoard.paint();
       this.healthbar.paint();
-
       if (this.bullets.length > 0) {
         for (let bullet of this.bullets) {
           bullet.paint();
         }
+      }
+
+      for (let yoda of this.powerUps) {
+        yoda.paint();
       }
 
       for (let enemy of this.enemies) {
