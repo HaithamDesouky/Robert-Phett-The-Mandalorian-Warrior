@@ -41,15 +41,34 @@ window.onload = () => {
       };
     }
     createEnemy() {
+      //score with difficulty
       let limit = 1;
       limit += this.score;
 
-      console.log(limit);
+      //left or right
+
       if (this.enemies.length < limit) {
         let randomHeight = Math.random() * 470;
-        const enemy = new Enemies(1500, randomHeight, this);
+        let direction = 'right';
+        let origin = -200;
+        let randomNumber = Math.floor(Math.random() * 11);
+
+        if (randomNumber % 2 === 0) {
+          origin = 1500;
+          direction = 'left';
+        } else {
+          origin = -200;
+          direction = 'right';
+        }
+        console.log(randomNumber);
+
+        const enemy = new Enemies(origin, randomHeight, direction, this);
+
         this.enemies.push(enemy);
-        console.log(this.enemies.length);
+
+        // console.log(enemy.x);
+
+        // console.log(this.enemies.length);
       }
 
       if (this.running) {
@@ -98,10 +117,10 @@ window.onload = () => {
 
       for (let enemy of this.enemies) {
         enemy.runLogic();
-        if (enemy.x < -200 || enemy.y > 900) {
+        if (enemy.x < -500 || enemy.x > 1600 || enemy.y > 1000) {
           this.enemies.splice(enemy, 1);
         }
-
+        console.log(enemy.x);
         const intersectingWithPlayer = enemy.checkIntersection(this.player);
 
         if (intersectingWithPlayer) {
@@ -145,124 +164,14 @@ window.onload = () => {
       }
     }
   }
-
-  class Enemies {
-    constructor(x, y, game) {
-      this.explosionImg = new Image();
-      this.explosionImg.src = '/images/enemy/explosion.png';
-      this.enemyImg = new Image();
-      this.enemyImg.src = '/images/enemy/viper.gif';
-      this.y = y;
-      this.x = x;
-      this.width = 200;
-      this.state = 'alive';
-      this.height = 200;
-      this.game = game;
-      this.player = this.game.player;
-      this.reasonable = 100;
-      this.reasonableHeight = 20;
-      this.speed = 15;
-    }
-
-    checkIntersection(player) {
-      return (
-        player.x + player.width - this.reasonable > this.x &&
-        player.x < this.x + this.width - this.reasonable &&
-        player.y + player.height - this.reasonable > this.y &&
-        player.y < this.y + this.height - this.reasonableHeight
-      );
-    }
-    runLogic() {
-      this.x -= this.speed;
-      if (this.state === 'dead') {
-        this.y += 8;
-      }
-    }
-    paint() {
-      let source = this.enemyImg;
-
-      if (this.state === 'alive') {
-        source = this.enemyImg;
-      } else if (this.state === 'dead') {
-        source = this.explosionImg;
-        this.width = 75;
-        this.height = 75;
-        this.speed = 5;
-        this.y += 4;
-      }
-      const context = this.game.context;
-      context.drawImage(source, this.x, this.y, this.width, this.height);
-    }
-  }
-
-  class ScoreBoard {
-    constructor(game) {
-      this.game = game;
-    }
-
-    paint() {
-      const context = this.game.context;
-      const score = this.game.score;
-      context.save();
-      context.fillStyle = 'gold';
-      context.font = '50px sans-serif';
-      context.fillText('S C O R E: ' + score, 570, 50);
-      context.restore();
-    }
-  }
-
-  class Healthbar {
-    constructor(game) {
-      this.game = game;
-      this.health = this.game.health;
-      this.fullbar = new Image();
-      this.fullbar.src = '/images/player/healthbar-3.jpg';
-      this.twoBar = new Image();
-      this.twoBar.src = '/images/player/healthbar-2.jpg';
-      this.health = 3;
-      this.currentHealth = this.fullbar;
-      this.oneBar = new Image();
-      this.oneBar.src = '/images/player/healthbar-1.jpg';
-      this.zeroBar = new Image();
-      this.zeroBar.src = '/images/player/healthbar-0.jpg';
-    }
-
-    runLogic() {
-      if (this.health === 0) {
-        this.game.running = false;
-        this.game.lose();
-      }
-    }
-
-    paint() {
-      const context = this.game.context;
-
-      let currentHealth = this.health;
-
-      switch (currentHealth) {
-        case 3:
-          currentHealth = this.fullbar;
-          break;
-        case 2:
-          currentHealth = this.twoBar;
-          break;
-        case 1:
-          currentHealth = this.oneBar;
-          break;
-        case 0:
-          currentHealth = this.zeroBar;
-      }
-      context.save();
-      context.fillStyle = 'gold';
-      context.font = '30px sans-serif';
-      context.fillText('H E A L T H', 40, 45);
-      context.restore();
-      context.drawImage(currentHealth, 30, 60, 180, 40);
-    }
-  }
 };
 
 //let timestamp
 
 //let shoothing timestap = timepstap - iff difference has pased
 //if shooting is true and 2 seconds have passed
+
+//left to right
+//save img in object
+//if score is greater than bla, start coming from left
+//local storage high score
