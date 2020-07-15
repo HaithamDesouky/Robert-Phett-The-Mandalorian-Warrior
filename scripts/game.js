@@ -171,7 +171,6 @@ window.onload = () => {
 //let shoothing timestap = timepstap - iff difference has pased
 //if shooting is true and 2 seconds have passed
 
-//left to right
 //save img in object
 //if score is greater than bla, start coming from left
 //local storage high score

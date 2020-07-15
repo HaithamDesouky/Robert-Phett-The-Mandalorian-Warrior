@@ -1,9 +1,6 @@
 class Player {
   constructor(game, x, y) {
     this.game = game;
-
-    this.fly = '/images/player/jet.png';
-    this.shootingImg = '/images/player/shoot.png';
     this.flying = false;
     this.shooting = false;
     this.running = false;
@@ -14,8 +11,8 @@ class Player {
     this.x_velocity = 0;
     this.y_velocity = 0;
     this.direction = 'left';
-    this.playerImg = new Image();
-    this.playerImg.src = `/images/player/idle-${this.direction}.png`;
+    this.playerImages = images;
+    this.playerImg = this.playerImages[`idle_${this.direction}`];
     this.control();
     this.canvas = canvas;
   }
@@ -61,8 +58,9 @@ class Player {
           break;
         case 'ArrowUp':
           event.preventDefault();
-          if (this.y > 0) this.y -= 15;
+          if (this.y > 0) this.y -= 20;
           this.shooting = false;
+          this.flying = true;
           break;
         case 'ArrowDown':
           event.preventDefault();
@@ -70,7 +68,7 @@ class Player {
           this.shooting = false;
           break;
       }
-
+      console.log(this.flying);
       this.flying = false;
       this.x += this.x_velocity;
       this.y += this.y_velocity;
@@ -95,20 +93,20 @@ class Player {
     if (this.flying === false && this.y < 550) {
       this.y += 4; //gravity
     }
-
+    //this.playerImages[`idle_${this.direction}`]
     if (this.y < 550) {
-      this.playerImg.src = `/images/player/jet-${this.direction}.png`;
+      this.playerImg = this.playerImages[`jet_${this.direction}`]; //this.playerImages[`idle-${this.direction}`]
       this.running = false;
     } else if (this.y > 550) {
-      this.playerImg.src = `/images/player/idle-${this.direction}.png`;
+      this.playerImg = this.playerImages[`idle_${this.direction}`];
     }
 
     if (this.shooting === true) {
-      this.playerImg.src = `/images/player/shoot-${this.direction}.png`;
+      this.playerImg = this.playerImages[`shoot_${this.direction}`];
     }
 
     if (this.running === true && this.shooting === false) {
-      this.playerImg.src = `/images/player/run-1-${this.direction}.png`;
+      this.playerImg = this.playerImages[`run_${this.direction}`];
     }
 
     context.drawImage(this.playerImg, this.x, this.y, this.width, this.height);
