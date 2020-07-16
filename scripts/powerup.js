@@ -25,10 +25,14 @@ class Powerup {
 
   paint() {
     let img = this.health;
+    let msg;
+    let points;
     if (this.purpose == 'health') {
       img = this.health;
+      msg = '';
     } else if (this.purpose == 'points') {
       img = this.babyYoda;
+      msg = 'Save me!!';
     }
 
     const context = this.game.context;
@@ -36,8 +40,7 @@ class Powerup {
     context.save();
     context.fillStyle = 'gold';
     context.font = '25px sans-serif';
-    context.fillText('Save me!!', this.x - 2, this.y);
-    context.fillText('5pts', this.x + 20, this.y + 120);
+    context.fillText(msg, this.x + 5, this.y);
     context.restore();
   }
 }

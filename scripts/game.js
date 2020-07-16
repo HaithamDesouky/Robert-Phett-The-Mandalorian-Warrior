@@ -3,6 +3,8 @@ window.onload = () => {
     const wrapper = document.querySelector('.wrapper');
     wrapper.style.display = 'none';
     const canvasElement = document.getElementById('canvas');
+    const canvasCSS = document.querySelector('.canvas-wrapper');
+    canvasCSS.style.display = 'flex';
     const game = new Game(canvasElement);
     game.running = true;
 
@@ -28,19 +30,48 @@ window.onload = () => {
       this.powerUp = new Powerup(500, 500, this);
       this.createPowerUp();
       this.powerUpGiven = false;
+      this.nooo = new Audio('/audio/nooooo.mp3');
+      this.yodaSound = new Audio('/audio/baby.mp3');
+      this.healthSound = new Audio('/audio/health.mp3');
+      this.blasterSound = new Audio('/audio/blaster.wav');
+      this.explosion = new Audio('/audio/Explosion+1.wav');
+      this.theme = new Audio('/audio/background.mp3');
     }
 
     lose() {
+      this.nooo.play();
       this.running = false;
       const losingDiv = document.getElementById('loser');
       losingDiv.style.display = 'block';
       this.canvas.style.display = 'none';
 
-      const result = document.querySelector('div span');
+      const result = document.getElementById('current-score');
       result.textContent = this.score;
+      const highScoreHolder = document.getElementById('high-score');
+      highScoreHolder.textContent = this.highScore;
+      if (this.score > this.background.highScore) {
+        this.background.highScore = this.score;
+        highScoreHolder.textContent = this.background.highScore;
+      } else {
+        highScoreHolder.textContent = this.background.highScore;
+      }
 
       document.getElementById('start-button2').onclick = () => {
-        location.reload();
+        this.canvas.style.display = 'block';
+        losingDiv.style.display = 'none';
+        this.powerUps.length = 0;
+        this.enemies.length = 0;
+        this.score = 0;
+        this.healthbar.health = 3;
+        this.running = true;
+        this.loop();
+        this.createEnemy();
+        this.player.x = 200;
+        this.player.y = 600;
+        this.theme.currentTime = 0;
+        this.theme.play();
+
+        console.log(this.running);
       };
     }
 
@@ -49,8 +80,6 @@ window.onload = () => {
       let randomY = 50 + Math.random() * 600;
       let randomNum = Math.floor(Math.random() * 11);
       let purpose = 'health';
-      debugger;
-
       if (
         this.score % 10 === 0 &&
         this.powerUps.length < 1 &&
@@ -59,15 +88,17 @@ window.onload = () => {
       ) {
         if (randomNum % 2 === 0) {
           purpose = 'health';
+          this.healthSound.play();
         } else {
           purpose = 'points';
+          this.yodaSound.play();
         }
 
         this.powerUpGiven = true;
 
-        const yoda = new Powerup(randomX, randomY, purpose, this);
+        const powerUp = new Powerup(randomX, randomY, purpose, this);
 
-        this.powerUps.push(yoda);
+        this.powerUps.push(powerUp);
       }
     }
     createEnemy() {
@@ -112,11 +143,20 @@ window.onload = () => {
             this.bullet.gunFired = true;
             const bullet = new Bullet(this);
             this.bullets.push(bullet);
+            this.blasterSound.play();
         }
       });
     }
     runLogic() {
+      console.log(this.player.x, this.player.y);
       this.player.runLogic();
+      this.healthbar.runLogic();
+      if (this.running) {
+        this.theme.play();
+      } else {
+        this.theme.pause();
+      }
+      //bullet run logic
       if (this.bullets.length > 0) {
         for (let bullet of this.bullets) {
           bullet.runLogic();
@@ -125,6 +165,7 @@ window.onload = () => {
             this.bullets.splice(bullet, 1);
           }
 
+          //checking for bullet collision with enemy
           for (let i = 0; i < this.enemies.length; i++) {
             if (
               bullet.x + bullet.width > this.enemies[i].x &&
@@ -132,6 +173,8 @@ window.onload = () => {
               bullet.y + bullet.height > this.enemies[i].y &&
               bullet.y < this.enemies[i].y + this.enemies[i].height
             ) {
+              this.explosion.play();
+
               this.enemies[i].state = 'dead';
               this.bullets.splice(bullet, 1);
               this.score += 1;
@@ -141,6 +184,7 @@ window.onload = () => {
         }
       }
 
+      //check for intersection with bullet
       for (let enemy of this.enemies) {
         enemy.runLogic();
         if (enemy.x < -500 || enemy.x > 1600 || enemy.y > 1000) {
@@ -149,28 +193,28 @@ window.onload = () => {
         const intersectingWithPlayer = enemy.checkIntersection(this.player);
 
         if (intersectingWithPlayer) {
+          this.explosion.play();
           this.healthbar.health--;
           enemy.state = 'dead';
         }
       }
 
-      for (let yoda of this.powerUps) {
-        const yodaPickedUp = yoda.checkIntersection(this.player);
-        if (yodaPickedUp) {
-          if (yoda.purpose === 'points') {
+      //check for powerups being picked up
+      for (let powerUp of this.powerUps) {
+        const powerUpPickedUp = powerUp.checkIntersection(this.player);
+        if (powerUpPickedUp) {
+          if (powerUp.purpose === 'points') {
             this.score += 5;
-          } else if (yoda.purpose === 'health') {
+          } else if (powerUp.purpose === 'health') {
+            //increments health or score depending on pick up
             if (this.healthbar.health < 3) {
               this.healthbar.health++;
             }
           }
-          this.powerUpGiven = false;
-          this.powerUps.splice(yoda, 1);
+          this.powerUpGiven = false; //makes it possible for powerups to be spawned
+          this.powerUps.splice(powerUp, 1);
         }
-        console.log(this.powerUpGiven);
       }
-
-      this.healthbar.runLogic();
     }
 
     clean() {
@@ -181,14 +225,15 @@ window.onload = () => {
       this.player.paint();
       this.scoreBoard.paint();
       this.healthbar.paint();
+
       if (this.bullets.length > 0) {
         for (let bullet of this.bullets) {
           bullet.paint();
         }
       }
 
-      for (let yoda of this.powerUps) {
-        yoda.paint();
+      for (let powerUp of this.powerUps) {
+        powerUp.paint();
       }
 
       for (let enemy of this.enemies) {
@@ -201,7 +246,7 @@ window.onload = () => {
       this.clean();
       this.paint();
 
-      if (this.running === true) {
+      if (this.running) {
         setTimeout(() => {
           this.loop();
         }, 1000 / 40);
@@ -215,6 +260,5 @@ window.onload = () => {
 //let shoothing timestap = timepstap - iff difference has pased
 //if shooting is true and 2 seconds have passed
 
-//save img in object
 //if score is greater than bla, start coming from left
 //local storage high score

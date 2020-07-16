@@ -13,9 +13,9 @@ class Player {
     this.direction = 'left';
     this.playerImages = images;
     this.playerImg = this.playerImages[`idle_${this.direction}`];
-    // this.control();
     this.canvas = canvas;
     this.map = {};
+    this.jetSound = new Audio('/audio/jet.wav');
   }
 
   onkeydown = (onkeydown = e => {
@@ -26,7 +26,7 @@ class Player {
       case 'ArrowLeft':
         event.preventDefault();
         if (this.x > 0) {
-          this.x -= 10;
+          this.x -= 15;
           this.shooting = false;
         }
         if (this.y < 560) {
@@ -59,6 +59,7 @@ class Player {
         break;
       case 'ArrowUp':
         event.preventDefault();
+        this.jetSound.play();
         this.flying = true;
         if (this.y > 0) this.y -= 20;
         this.shooting = false;
@@ -66,7 +67,7 @@ class Player {
         break;
       case 'ArrowDown':
         event.preventDefault();
-        if (this.y < 590) this.y += 10;
+        if (this.y < 590) this.y += 15;
         this.shooting = false;
         break;
     }
