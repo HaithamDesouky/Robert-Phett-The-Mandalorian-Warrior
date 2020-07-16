@@ -8,6 +8,12 @@ window.onload = () => {
     const game = new Game(canvasElement);
     game.running = true;
 
+    const savedValue = window.localStorage.getItem('High-Score');
+    console.log(savedValue);
+
+    game.background.highScore = savedValue;
+    console.log(game.highScore);
+
     game.loop();
   };
 
@@ -49,8 +55,11 @@ window.onload = () => {
       result.textContent = this.score;
       const highScoreHolder = document.getElementById('high-score');
       highScoreHolder.textContent = this.highScore;
+
       if (this.score > this.background.highScore) {
         this.background.highScore = this.score;
+        window.localStorage.setItem('High-Score', this.score);
+
         highScoreHolder.textContent = this.background.highScore;
       } else {
         highScoreHolder.textContent = this.background.highScore;
@@ -58,6 +67,8 @@ window.onload = () => {
 
       document.getElementById('start-button2').onclick = () => {
         this.canvas.style.display = 'block';
+        this.highScore = window.localStorage.getItem('High-Score');
+
         losingDiv.style.display = 'none';
         this.powerUps.length = 0;
         this.enemies.length = 0;
@@ -70,8 +81,6 @@ window.onload = () => {
         this.player.y = 600;
         this.theme.currentTime = 0;
         this.theme.play();
-
-        console.log(this.running);
       };
     }
 
@@ -148,7 +157,6 @@ window.onload = () => {
       });
     }
     runLogic() {
-      console.log(this.player.x, this.player.y);
       this.player.runLogic();
       this.healthbar.runLogic();
       if (this.running) {
