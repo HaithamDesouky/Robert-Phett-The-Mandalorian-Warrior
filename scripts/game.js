@@ -217,14 +217,16 @@ window.onload = () => {
             ) {
               this.enemies[i].health--;
               console.log(this.enemies[i].health);
-              if (this.enemies[i].health === 0) {
-                this.explosion.play();
 
-                this.enemies[i].state = 'dead';
-                this.bullets.splice(bullet, 1);
-                this.score += 1;
-                this.createPowerUp();
-              }
+              this.bullets.splice(bullet, 1);
+
+              this.score += 1;
+            }
+
+            if (this.enemies[i].health === 0) {
+              this.createPowerUp();
+              this.explosion.play();
+              this.enemies[i].state = 'dead';
             }
           }
         }
