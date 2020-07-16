@@ -13,8 +13,8 @@ class Background {
     context.drawImage(this.bgTitle, 0, 0, this.width, this.height);
     context.save();
     context.fillStyle = 'gold';
-    context.font = '40px sans-serif';
-    context.fillText('High score: ' + this.highScore, 1200, 45);
+    context.font = '50px Mandalore';
+    context.fillText('H i g h s c o r e: ' + this.highScore, 1170, 45);
     context.restore();
   }
 }

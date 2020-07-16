@@ -41,8 +41,8 @@ class Healthbar {
     }
     context.save();
     context.fillStyle = 'gold';
-    context.font = '30px sans-serif';
-    context.fillText('H E A L T H', 40, 45);
+    context.font = '50px Mandalore';
+    context.fillText('H E A L T H', 35, 45);
     context.restore();
     context.drawImage(currentHealth, 30, 60, 180, 40);
   }

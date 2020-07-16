@@ -52,18 +52,4 @@ class Enemies {
   }
 }
 
-class ScoreBoard {
-  constructor(game) {
-    this.game = game;
-  }
 
-  paint() {
-    const context = this.game.context;
-    const score = this.game.score;
-    context.save();
-    context.fillStyle = 'gold';
-    context.font = '50px sans-serif';
-    context.fillText('S C O R E: ' + score, 570, 50);
-    context.restore();
-  }
-}

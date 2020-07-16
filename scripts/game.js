@@ -37,7 +37,7 @@ window.onload = () => {
       this.createPowerUp();
       this.powerUpGiven = false;
       this.nooo = new Audio('/audio/nooooo.mp3');
-      this.yodaSound = new Audio('/audio/baby.mp3');
+      this.yodaSound = new Audio('/audio/helpyou.wav');
       this.healthSound = new Audio('/audio/health.mp3');
       this.blasterSound = new Audio('/audio/blaster.wav');
       this.explosion = new Audio('/audio/Explosion+1.wav');
@@ -97,9 +97,11 @@ window.onload = () => {
       ) {
         if (randomNum % 2 === 0) {
           purpose = 'health';
+          this.healthSound.volume = 0.2;
           this.healthSound.play();
         } else {
           purpose = 'points';
+          this.yodaSound.volume = 1;
           this.yodaSound.play();
         }
 
@@ -160,6 +162,7 @@ window.onload = () => {
       this.player.runLogic();
       this.healthbar.runLogic();
       if (this.running) {
+        this.theme.volume = 0.5;
         this.theme.play();
       } else {
         this.theme.pause();
