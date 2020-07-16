@@ -10,8 +10,12 @@ window.onload = () => {
 
     const savedValue = window.localStorage.getItem('High-Score');
     console.log(savedValue);
+    if (savedValue) {
+      game.background.highScore = savedValue;
+    } else {
+      game.background.highScore = 0;
+    }
 
-    game.background.highScore = savedValue;
     console.log(game.highScore);
 
     game.loop();
