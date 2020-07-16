@@ -1,5 +1,5 @@
 class Enemies {
-  constructor(x, y, direction, game) {
+  constructor(x, y, direction, width, height, boss, health, game) {
     this.explosionImg = new Image();
     this.explosionImg.src = '/images/enemy/explosion.png';
     this.enemyImg = new Image();
@@ -7,14 +7,18 @@ class Enemies {
     this.y = y;
     this.x = x;
     this.direction = direction;
-    this.width = 200;
+    this.width = width;
     this.state = 'alive';
-    this.height = 200;
+    this.height = height;
     this.game = game;
     this.player = this.game.player;
     this.reasonable = 100;
     this.reasonableHeight = 20;
     this.speed = 15;
+    this.bigBoss = new Image();
+    this.bigBoss.src = '/images/enemy/luke.png';
+    this.isBigBoss = boss;
+    this.health = health;
   }
 
   checkIntersection(player) {
@@ -36,20 +40,34 @@ class Enemies {
     }
   }
   paint() {
-    let source = this.enemyImg;
+    let source;
 
-    if (this.state === 'alive') {
-      source = this.enemyImg;
-    } else if (this.state === 'dead') {
-      source = this.explosionImg;
-      this.width = 75;
-      this.height = 75;
-      this.speed = 5;
-      this.y += 4;
+    if (!this.isBigBoss) {
+      if (this.state === 'alive') {
+        source = this.enemyImg;
+      } else if (this.state === 'dead') {
+        source = this.explosionImg;
+        this.width = 75;
+        this.height = 75;
+        this.speed = 5;
+        this.y += 4;
+      }
     }
+
+    if (this.isBigBoss) {
+      if (this.state === 'alive') {
+        source = this.bigBoss;
+      } else if (this.state === 'dead') {
+        source = this.explosionImg;
+        this.width = 200;
+        this.height = 200;
+        this.speed = 2;
+        this.y += 4;
+        this.health = 2;
+      }
+    }
+
     const context = this.game.context;
     context.drawImage(source, this.x, this.y, this.width, this.height);
   }
 }
-
-

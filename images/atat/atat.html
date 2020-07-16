@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <canvas id="canvas" width="500" height="500"></canvas>
+
+    <script>
+      const canWidth = 650;
+      const canHeight = 280;
+      const canvas = document.getElementById('canvas');
+      ctx = canvas.getContext('2d');
+      canvas.width = canWidth;
+      canvas.height = canHeight;
+
+      const player = {
+        x: 0,
+        y: 0,
+        width: 63.8,
+        height: 83,
+        frameX: 0,
+        frameY: 0,
+        speed: 9,
+        moving: false
+      };
+
+      function drawSprite
+      const playerSprite = new Image();
+      playerSprite.src = '/atat.png';
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        ctx.drawImage(playerSprite, 0, 0, player.width, player.height);
+
+        window.requestAnimationFrame(animate);
+      }
+
+      animate();
+    </script>
+  </body>
+</html>

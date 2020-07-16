@@ -128,6 +128,9 @@ window.onload = () => {
         let direction = 'right';
         let origin = -200;
         let randomNumber = Math.floor(Math.random() * 11);
+        let width;
+        let height;
+        let health;
 
         if (randomNumber % 2 === 0) {
           origin = 1500;
@@ -137,7 +140,31 @@ window.onload = () => {
           direction = 'right';
         }
 
-        const enemy = new Enemies(origin, randomHeight, direction, this);
+        let isBigBoss;
+
+        if (this.score % 10 === 0 && this.score !== 0) {
+          isBigBoss = true;
+          direction = 'left';
+          width = 120;
+          height = 200;
+          health = 2;
+        } else {
+          isBigBoss = false;
+          width = 200;
+          height = 200;
+          health = 1;
+        }
+
+        const enemy = new Enemies(
+          origin,
+          randomHeight,
+          direction,
+          width,
+          height,
+          isBigBoss,
+          health,
+          this
+        );
 
         this.enemies.push(enemy);
       }
@@ -188,12 +215,16 @@ window.onload = () => {
               bullet.y + bullet.height > this.enemies[i].y &&
               bullet.y < this.enemies[i].y + this.enemies[i].height
             ) {
-              this.explosion.play();
+              this.enemies[i].health--;
+              console.log(this.enemies[i].health);
+              if (this.enemies[i].health === 0) {
+                this.explosion.play();
 
-              this.enemies[i].state = 'dead';
-              this.bullets.splice(bullet, 1);
-              this.score += 1;
-              this.createPowerUp();
+                this.enemies[i].state = 'dead';
+                this.bullets.splice(bullet, 1);
+                this.score += 1;
+                this.createPowerUp();
+              }
             }
           }
         }
