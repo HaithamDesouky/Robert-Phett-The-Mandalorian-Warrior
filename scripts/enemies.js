@@ -14,7 +14,7 @@ class Enemies {
     this.player = this.game.player;
     this.reasonable = 100;
     this.reasonableHeight = 20;
-    this.speed = 11;
+    this.speed = 9;
     this.bigBoss = new Image();
     this.bigBoss.src = '/images/enemy/luke.png';
     this.isBigBoss = boss;
