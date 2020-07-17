@@ -142,7 +142,7 @@ window.onload = () => {
 
         let isBigBoss;
         // (this.score % 10 === 0 && this.score !== 0)
-        if (this.score % 15 === 0 && this.score !== 0) {
+        if (this.score % 8 === 0 && this.score !== 0) {
           isBigBoss = true;
           direction = 'right';
           width = 120;
