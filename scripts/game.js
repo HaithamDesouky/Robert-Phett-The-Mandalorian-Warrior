@@ -141,13 +141,15 @@ window.onload = () => {
         }
 
         let isBigBoss;
-
-        if (this.score % 10 === 0 && this.score !== 0) {
+        // (this.score % 10 === 0 && this.score !== 0)
+        if (this.score % 15 === 0 && this.score !== 0) {
           isBigBoss = true;
-          direction = 'left';
+          direction = 'right';
           width = 120;
-          height = 200;
-          health = 2;
+          height = 170;
+          health = 3;
+          limit = 1;
+          origin = -100;
         } else {
           isBigBoss = false;
           width = 200;
@@ -297,16 +299,8 @@ window.onload = () => {
       if (this.running) {
         setTimeout(() => {
           this.loop();
-        }, 1000 / 40);
+        }, 1000 / 60);
       }
     }
   }
 };
-
-//let timestamp
-
-//let shoothing timestap = timepstap - iff difference has pased
-//if shooting is true and 2 seconds have passed
-
-//if score is greater than bla, start coming from left
-//local storage high score

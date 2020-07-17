@@ -37,7 +37,7 @@ class Player {
           this.running = true;
         }
         this.direction = 'left';
-        // this.moveLeft();
+
         break;
       case 'ArrowRight':
         event.preventDefault();
@@ -55,7 +55,6 @@ class Player {
         this.flying = true;
         this.shooting = false;
 
-        // this.moveRight();
         break;
       case 'ArrowUp':
         event.preventDefault();
@@ -78,18 +77,6 @@ class Player {
     this.y_velocity *= 0.9;
   });
 
-  // control() {
-  //   window.addEventListener('keydown', event => {
-  //     const key = event.key;
-
-  // moveLeft() {
-  //   this.x_velocity -= 0.5;
-  // }
-
-  // moveRight() {
-  //   this.x_velocity += 0.5;
-  // }
-
   runLogic() {}
 
   paint() {
@@ -101,7 +88,7 @@ class Player {
     }
     //this.playerImages[`idle_${this.direction}`]
     if (this.y < 550) {
-      this.playerImg = this.playerImages[`jet_${this.direction}`]; //this.playerImages[`idle-${this.direction}`]
+      this.playerImg = this.playerImages[`jet_${this.direction}`];
       this.running = false;
     } else if (this.y > 550) {
       this.playerImg = this.playerImages[`idle_${this.direction}`];

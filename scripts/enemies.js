@@ -14,11 +14,13 @@ class Enemies {
     this.player = this.game.player;
     this.reasonable = 100;
     this.reasonableHeight = 20;
-    this.speed = 15;
+    this.speed = 11;
     this.bigBoss = new Image();
     this.bigBoss.src = '/images/enemy/luke.png';
     this.isBigBoss = boss;
     this.health = health;
+    this.dying = new Image();
+    this.dying.src = '/images/enemy/dying.png';
   }
 
   checkIntersection(player) {
@@ -58,9 +60,9 @@ class Enemies {
       if (this.state === 'alive') {
         source = this.bigBoss;
       } else if (this.state === 'dead') {
-        source = this.explosionImg;
-        this.width = 200;
-        this.height = 200;
+        source = this.dying;
+        this.width = 120;
+        this.height = 170;
         this.speed = 2;
         this.y += 4;
         this.health = 2;
