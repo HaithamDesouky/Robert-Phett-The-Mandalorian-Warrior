@@ -186,8 +186,10 @@ window.onload = () => {
             this.player.shooting = true;
             this.bullet.gunFired = true;
             const bullet = new Bullet(this);
-            this.bullets.push(bullet);
-            this.blasterSound.play();
+            if (this.bullets.length < 2) {
+              this.bullets.push(bullet);
+              this.blasterSound.play();
+            }
         }
       });
     }
@@ -242,7 +244,7 @@ window.onload = () => {
         }
         const intersectingWithPlayer = enemy.checkIntersection(this.player);
 
-        if (intersectingWithPlayer) {
+        if (intersectingWithPlayer && enemy.state === 'alive') {
           this.explosion.play();
           this.healthbar.health--;
           enemy.state = 'dead';
