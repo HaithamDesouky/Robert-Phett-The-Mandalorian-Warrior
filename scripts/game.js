@@ -186,7 +186,7 @@ window.onload = () => {
             this.player.shooting = true;
             this.bullet.gunFired = true;
             const bullet = new Bullet(this);
-            if (this.bullets.length < 2) {
+            if (this.bullets < 3) {
               this.bullets.push(bullet);
               this.blasterSound.play();
             }
@@ -244,7 +244,7 @@ window.onload = () => {
         }
         const intersectingWithPlayer = enemy.checkIntersection(this.player);
 
-        if (intersectingWithPlayer && enemy.state === 'alive') {
+        if (intersectingWithPlayer) {
           this.explosion.play();
           this.healthbar.health--;
           enemy.state = 'dead';
