@@ -9,14 +9,11 @@ window.onload = () => {
     game.running = true;
 
     const savedValue = window.localStorage.getItem('High-Score');
-    console.log(savedValue);
     if (savedValue) {
       game.background.highScore = savedValue;
     } else {
       game.background.highScore = 0;
     }
-
-    console.log(game.highScore);
 
     game.loop();
   };
@@ -40,7 +37,7 @@ window.onload = () => {
       this.powerUp = new Powerup(500, 500, this);
       this.createPowerUp();
       this.powerUpGiven = false;
-      this.nooo = new Audio('/audio/nooooo.mp3');
+      this.gameOverSound = new Audio('/audio/nooooo.mp3');
       this.yodaSound = new Audio('/audio/helpyou.wav');
       this.healthSound = new Audio('/audio/health.mp3');
       this.blasterSound = new Audio('/audio/blaster.wav');
@@ -49,7 +46,7 @@ window.onload = () => {
     }
 
     lose() {
-      this.nooo.play();
+      this.gameOverSound.play();
       this.running = false;
       const losingDiv = document.getElementById('loser');
       losingDiv.style.display = 'block';
@@ -220,7 +217,6 @@ window.onload = () => {
               bullet.y < this.enemies[i].y + this.enemies[i].height
             ) {
               this.enemies[i].health--;
-              console.log(this.enemies[i].health);
 
               this.bullets.splice(bullet, 1);
 
